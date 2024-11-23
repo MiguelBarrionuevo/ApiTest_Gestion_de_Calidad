@@ -1,0 +1,430 @@
+{
+	"info": {
+		"_postman_id": "ef7d0218-7a83-4ae9-bf8e-f8dd3bd33486",
+		"name": "Todoly-MBT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27531873"
+	},
+	"item": [
+		{
+			"name": "1. Get Project By Id",
+			"item": [
+				{
+					"name": "Create New Project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let randomNumber = Math.floor(Math.random() * 15); \r",
+									"pm.collectionVariables.set(\"iconNumber\", randomNumber);\r",
+									"\r",
+									"\r",
+									"let randomName = pm.variables.replaceIn(\"{{$randomJobTitle}}\");\r",
+									"pm.collectionVariables.set(\"projectName\", randomName);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Id is a number\", function () {\r",
+									"    var jsonData = pm.response.json();  \r",
+									"    pm.collectionVariables.set(\"projectId\", jsonData.Id); //\r",
+									"    pm.expect(jsonData.Id).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Project exists\", function () {\r",
+									"    var jsonData = pm.response.json(); \r",
+									"    pm.expect(jsonData.Deleted).to.eql(false); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectName is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedProjectName = pm.collectionVariables.get(\"projectName\"); \r",
+									"    pm.expect(jsonData.Content).to.eql(expectedProjectName);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{password}}",
+								"username": "{{username}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Content\":\"{{projectName}}\",\r\n    \"Icon\":\"{{iconNumber}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}api/projects.json"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Project By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Project exists\", function () {\r",
+									"    var jsonData = pm.response.json(); \r",
+									"    pm.expect(jsonData.Deleted).to.eql(false); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectId is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedId = pm.collectionVariables.get(\"projectId\"); \r",
+									"    pm.expect(jsonData.Id).to.eql(expectedId);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectName is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedProjectName = pm.collectionVariables.get(\"projectName\"); \r",
+									"    pm.expect(jsonData.Content).to.eql(expectedProjectName);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{password}}",
+								"username": "{{username}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}api/projects/{{projectId}}.json"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Update Project By Id",
+			"item": [
+				{
+					"name": "Update Project By Id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var iconnum = pm.collectionVariables.get(\"iconNumber\");\r",
+									"function getRandomNumber() {\r",
+									"    return Math.floor(Math.random() * 15); \r",
+									"}\r",
+									"var newIconNum = getRandomNumber();\r",
+									"while (newIconNum === iconnum) {\r",
+									"    newIconNum = getRandomNumber();\r",
+									"}\r",
+									"pm.collectionVariables.set(\"iconNumber\", newIconNum);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectId is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedId = pm.collectionVariables.get(\"projectId\"); \r",
+									"    pm.expect(jsonData.Id).to.eql(expectedId);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Icon is correct update\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedIcon = pm.collectionVariables.get(\"iconNumber\"); \r",
+									"    pm.expect(jsonData.Icon).to.eql(expectedIcon);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectName is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedProjectName = pm.collectionVariables.get(\"projectName\"); \r",
+									"    pm.expect(jsonData.Content).to.eql(expectedProjectName);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{password}}",
+								"username": "{{username}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Icon\":\"{{iconNumber}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}api/projects/{{projectId}}.json"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Get Items of a Project",
+			"item": [
+				{
+					"name": "Create New Item",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{password}}",
+								"username": "{{username}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Content\": \"{{$randomPhrase}}\",\r\n  \"ProjectId\": \"{{projectId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}api/items.json"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items of a Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"// Test para verificar que la respuesta es un array y que tiene más de 0 items\r",
+									"pm.test(\"Items > 0\", function () {\r",
+									"    const jsonResponse = pm.response.json(); \r",
+									"    pm.expect(jsonResponse).to.be.an(\"array\");\r",
+									"\r",
+									"    const itemCount = jsonResponse.length; \r",
+									"    pm.expect(itemCount).to.be.above(0); \r",
+									"});\r",
+									"\r",
+									"// Test para verificar que cada ítem tiene un ID\r",
+									"pm.test(\"Items have ID\", function () {\r",
+									"    const jsonResponse = pm.response.json(); \r",
+									"    jsonResponse.forEach(item => {\r",
+									"        pm.expect(item).to.have.property(\"Id\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"// Test para verificar que todos los ítems pertenecen al mismo ProjectId\r",
+									"pm.test(\"Items have the same ProjectId\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    const firstProjectId = jsonResponse[0].ProjectId; \r",
+									"\r",
+									"    jsonResponse.forEach(item => {\r",
+									"        pm.expect(item.ProjectId).to.equal(firstProjectId);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{password}}",
+								"username": "{{username}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}api/projects/{{projectId}}/items.json"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Delete Project By Id",
+			"item": [
+				{
+					"name": "Delete Project By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2 Seconds\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Project is deleted\", function () {\r",
+									"    var jsonData = pm.response.json(); \r",
+									"    pm.expect(jsonData.Deleted).to.eql(true); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectId is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedId = pm.collectionVariables.get(\"projectId\"); \r",
+									"    pm.expect(jsonData.Id).to.eql(expectedId);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ProjectName is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var expectedProjectName = pm.collectionVariables.get(\"projectName\"); \r",
+									"    pm.expect(jsonData.Content).to.eql(expectedProjectName);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "{{password}}",
+								"username": "{{username}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}api/projects/{{projectId}}.json"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "iconNumber",
+			"value": ""
+		},
+		{
+			"key": "projectName",
+			"value": ""
+		},
+		{
+			"key": "projectId",
+			"value": ""
+		}
+	]
+}
